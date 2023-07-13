@@ -21,3 +21,4 @@
 #### Update values in terraform.tfvars
 - Update everything to the right values in `terraform.tfvars`
 - A sample tfvars file is added at `./terrafrom/terraform.tfvars`
+- From the `./terraform` directory, run `terraform plan` and `terraform apply`
