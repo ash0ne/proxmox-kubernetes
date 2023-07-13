@@ -8,6 +8,7 @@
 
 #### Create a VM template
 - SSH into your each of your proxmox nodes as root and run the below command to create a VM template in each proxmox node.
+- Make sure to replace `<vm-id>` with a valid and recognizable number like 8888 or 9999
 - Run  `wget -O template.sh https://raw.githubusercontent.com/ash0ne/proxmox-homelab-kube/main/prepare-vm-template.sh && . template.sh --vmid <vm-id>`
 
 #### Create an API key and add permissions
