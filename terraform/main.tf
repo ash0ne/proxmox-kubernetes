@@ -58,6 +58,11 @@ resource "proxmox_vm_qemu" "kube-server" {
   EOF
 }
 
+locals {
+  ip_parts     = split(".", var.ip_net_agent)
+  ip_last_byte = split("/", local.ip_parts[3])[0]
+}
+
 # Create VMs for agent k8s nodes
 resource "proxmox_vm_qemu" "kube-agent" {
   count       = 2
@@ -95,7 +100,8 @@ resource "proxmox_vm_qemu" "kube-agent" {
   }
 
   # Create IPs in increasing order of the given agent IP
-  ipconfig0 = "ip=${cidrhost(var.ip_net_agent, count.index)}/24,gw=${var.gateway}"
+  ipconfig0 = "ip=${cidrhost(var.ip_net_agent, local.ip_last_byte + count.index)}/24,gw=${var.gateway}"
+
 
   sshkeys = <<EOF
   ${var.ssh_key}
