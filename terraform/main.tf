@@ -28,13 +28,13 @@ resource "proxmox_vm_qemu" "kube-server" {
   cores       = 2
   sockets     = 1
   cpu         = "host"
-  memory      = 2048
+  memory      = 4096
   scsihw      = "virtio-scsi-pci"
   bootdisk    = "scsi0"
 
   disk {
     slot     = 0
-    size     = "16G"
+    size     = "32G"
     type     = "scsi"
     storage  = var.file_system == "zfs" ? "local-zfs" : "local-lvm"
     iothread = 0
@@ -76,13 +76,13 @@ resource "proxmox_vm_qemu" "kube-agent" {
   cores       = 1
   sockets     = 1
   cpu         = "host"
-  memory      = 1500
+  memory      = 3072
   scsihw      = "virtio-scsi-pci"
   bootdisk    = "scsi0"
 
   disk {
     slot     = 0
-    size     = "10G"
+    size     = "16G"
     type     = "scsi"
     storage  = var.file_system == "zfs" ? "local-zfs" : "local-lvm"
     iothread = 0
