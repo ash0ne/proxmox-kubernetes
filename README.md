@@ -27,9 +27,11 @@
 - Run `ansible -i ./ansible/inventory/hosts all -m ping -u ubuntu --key-file <private_ssh_key>`. This SSH key should be the private key matching the ssh public key added in `terraform.tfvars`
 
 ### Run the ansible playbooks in order
-- Apply the common playbook first by running ` ansible-playbook -i ./ansible/inventory/hosts --key-file <private_ssh_key> ./ansible/roles/common/tasks/main.yaml`
+- Apply the common playbook first by running `ansible-playbook -i ./ansible/inventory/hosts --key-file <private_ssh_key> ./ansible/roles/common/tasks/main.yaml`
 - Apply the main-node playbook to initialise k8s master node by running `ansible-playbook -i ./ansible/inventory/hosts --key-file <private_ssh_key> ./ansible/roles/main-node/tasks/main.yaml`
 - At this point, ssh into the master node by running `ssh ubuntu@<main-nod-ip> -i <private_ssh_key>` and install the cluster network by running `kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/calico.yaml`
 - You should now have your core `kube-system` pods running and should see the below output if you run `kubectl get pod -A`
 
  ![kube-system](https://github.com/ash0ne/proxmox-homelab-kube/assets/136186619/dfcb5737-827b-4379-988a-c828a425d6e6)
+
+- Join the agent nodes by running  `ansible-playbook -i ./ansible/inventory/hosts --key-file <private_ssh_key> ./ansible/roles/join-nodes/tasks/main.yaml --extra-vars "main_node_ip=<ip_of_the_main_node>"`
