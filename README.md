@@ -3,6 +3,7 @@
 - A complete package built using shell, Terrafrom and Ansible to automate the creation of a complete Kubernetes cluster in a proxmox installation.
 - Most values default to the default installation settings of proxmox, the comments in the files should help you change any if you need to.
 - Has been tested with proxmox 7.x and 8.x.
+- The terrafrom assumes a 2 node setup but if you have more nodes, you can easily update the terraform and ansible to suit your needs.
 
 ## Steps:
 
