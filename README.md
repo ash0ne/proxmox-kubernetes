@@ -1,4 +1,4 @@
-# proxmox-homelab-kube
+# proxmox-kubernetes
 
 - A complete package built using shell, Terrafrom and Ansible to automate the creation of a complete Kubernetes cluster in a proxmox installation.
 - Most values default to the default installation settings of proxmox, the comments in the files should help you change any if you need to.
