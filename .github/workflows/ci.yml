@@ -1,4 +1,4 @@
-name: 'Terraform'
+name: 'Proxmox K8s Terraform CI'
 
 on:
   push:
