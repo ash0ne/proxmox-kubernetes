@@ -1,40 +1,57 @@
 #!/bin/bash
 
-# Parse command line arguments
+usage() {
+    echo "Usage: $0 --vmid <VMID> [--storage <STORAGE>] [--help]"
+    echo "Options:"
+    echo "  --vmid       Specify a unique VM ID (required)."
+    echo "  --storage    Specify the storage pool to use (optional, default: local-lvm)."
+    echo "  --help       Display this help message."
+    exit 1
+}
+
+# Default storage
+STORAGE="local-lvm"
+
+# Parse command-line arguments
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         --vmid) VMID="$2"; shift ;;
-        *) echo "Unknown parameter passed: $1"; exit 1 ;;
+        --storage) STORAGE="$2"; shift ;;
+        --help) usage ;;
+        *) echo "Unknown parameter passed: $1"; usage ;;
     esac
     shift
 done
 
+# Check for required VMID argument
 if [[ -z $VMID ]]; then
-    echo "VMID is required. Please provide a valid VMID using the --vmid option."
-    exit 1
+    echo "Error: VMID is required."
+    usage
 fi
 
-
 # Fetch a cloud-init image of Ubuntu
-wget https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
+wget -q https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
 
-# If you have multiple nodes and run a proxmox cluster, try and run this on the node with the maximum storage
-# If you are not on a proxmox subscription, disable any enterprise repos( https://enterprise.proxmox.com/**) before running this script
-# The enterprise repos can be disabled by clicking on the node name (For e.g. 'pve') and going into the 'Repositories' sections
+# If you have multiple nodes and run a Proxmox cluster, try and run this on the node with the maximum storage.
+# If you are not on a Proxmox subscription, disable any enterprise repos:
+# The enterprise repos can be disabled by navigating to the node name ('pve') and going into the 'Repositories' section.
+
+# Update and install necessary tools
 apt update -y
-apt install libguestfs-tools -y
+apt install -y libguestfs-tools
 virt-customize -a focal-server-cloudimg-amd64.img --install qemu-guest-agent
 
-# Create a base VM with the right config for you
-# Lable it with a unique and high ID so that the template doesn't show up on the top of your list
+# Create a base VM with the right configuration
+echo "Creating VM with ID: $VMID and storage: $STORAGE"
 qm create $VMID --name "ubuntu-2204-template" --memory 2048 --cores 2 --net0 virtio,bridge=vmbr0
-qm importdisk $VMID focal-server-cloudimg-amd64.img local-lvm
-qm set $VMID --scsihw virtio-scsi-pci --scsi0 local-lvm:vm-$VMID-disk-0
+qm importdisk $VMID focal-server-cloudimg-amd64.img $STORAGE
+qm set $VMID --scsihw virtio-scsi-pci --scsi0 $STORAGE:vm-$VMID-disk-0
 qm set $VMID --boot c --bootdisk scsi0
-qm set $VMID --ide2 local-lvm:cloudinit
+qm set $VMID --ide2 $STORAGE:cloudinit
 qm set $VMID --serial0 socket --vga serial0
 qm set $VMID --agent enabled=1
 
-# Make it a template
+# Convert the VM into a template
 qm template $VMID
 
+echo "Template created successfully with VMID: $VMID on storage: $STORAGE"
