@@ -1,20 +1,20 @@
-#!/bin/bash
+#!/bin/sh
 
 usage() {
     echo "Usage: $0 --vmid <VMID> [--storage <STORAGE>] [--help]"
     echo "Options:"
     echo "  --vmid       Specify a unique VM ID (required)."
     echo "  --storage    Specify the storage pool to use (optional, default: local-lvm)."
-    echo "  --help       Display this help message."
+    echo "  --help       Display help."
     exit 1
 }
 
-# Default storage
+# Default values
 STORAGE="local-lvm"
 
 # Parse command-line arguments
-while [[ "$#" -gt 0 ]]; do
-    case $1 in
+while [ "$#" -gt 0 ]; do
+    case "$1" in
         --vmid) VMID="$2"; shift ;;
         --storage) STORAGE="$2"; shift ;;
         --help) usage ;;
@@ -24,7 +24,7 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 # Check for required VMID argument
-if [[ -z $VMID ]]; then
+if [ -z "$VMID" ]; then
     echo "Error: VMID is required."
     usage
 fi
@@ -43,15 +43,15 @@ virt-customize -a focal-server-cloudimg-amd64.img --install qemu-guest-agent
 
 # Create a base VM with the right configuration
 echo "Creating VM with ID: $VMID and storage: $STORAGE"
-qm create $VMID --name "ubuntu-2204-template" --memory 2048 --cores 2 --net0 virtio,bridge=vmbr0
-qm importdisk $VMID focal-server-cloudimg-amd64.img $STORAGE
-qm set $VMID --scsihw virtio-scsi-pci --scsi0 $STORAGE:vm-$VMID-disk-0
-qm set $VMID --boot c --bootdisk scsi0
-qm set $VMID --ide2 $STORAGE:cloudinit
-qm set $VMID --serial0 socket --vga serial0
-qm set $VMID --agent enabled=1
+qm create "$VMID" --name "ubuntu-2204-template" --memory 2048 --cores 2 --net0 virtio,bridge=vmbr0
+qm importdisk "$VMID" focal-server-cloudimg-amd64.img "$STORAGE"
+qm set "$VMID" --scsihw virtio-scsi-pci --scsi0 "$STORAGE:vm-$VMID-disk-0"
+qm set "$VMID" --boot c --bootdisk scsi0
+qm set "$VMID" --ide2 "$STORAGE:cloudinit"
+qm set "$VMID" --serial0 socket --vga serial0
+qm set "$VMID" --agent enabled=1
 
 # Convert the VM into a template
-qm template $VMID
+qm template "$VMID"
 
 echo "Template created successfully with VMID: $VMID on storage: $STORAGE"
