@@ -33,7 +33,7 @@
 ### Run the ansible playbooks in order
 - Apply the common playbook first by running `ansible-playbook -i ./ansible/inventory/hosts --key-file <private_ssh_key> ./ansible/roles/common/tasks/main.yaml`
 - Apply the main-node playbook to initialise k8s master node by running `ansible-playbook -i ./ansible/inventory/hosts --key-file <private_ssh_key> ./ansible/roles/main-node/tasks/main.yaml`
-- At this point, ssh into the master node by running `ssh ubuntu@<main-nod-ip> -i <private_ssh_key>` and install the cluster network by running `kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/calico.yaml`
+- At this point, ssh into the master node by running `ssh ubuntu@<main-nod-ip> -i <private_ssh_key>` and install the cluster network by running `kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/calico.yaml`
 - You should now have your core `kube-system` pods running and should see the below output if you run `kubectl get pod -A`
 
  ![kube-system](https://github.com/ash0ne/proxmox-kubernetes/assets/136186619/dfcb5737-827b-4379-988a-c828a425d6e6)
