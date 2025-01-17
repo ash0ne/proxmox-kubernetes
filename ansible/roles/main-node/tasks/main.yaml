@@ -12,7 +12,7 @@
     when: reset_cluster is succeeded
     shell: |
       kubeadm init --service-cidr 10.96.0.0/12 \
-                  --kubernetes-version 1.27.2 \
+                  --kubernetes-version 1.30.2 \
                   --pod-network-cidr 10.244.0.0/16 \
                   --cri-socket /var/run/containerd/containerd.sock 
     register: init_cluster

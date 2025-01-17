@@ -27,3 +27,6 @@ target_node_agent = "<agent-node-name>"
 # IPs are created sequentially for all agent VMs. 
 # For e.g. if agent VM resource count is 3 and you've defined the IP as 192.168.0.200, the IPs will be 192.168.0.200, 192.168.0.201 and 192.168.0.202
 ip_net_agent = "192.168.0.200/24"
+
+# Defaults to lvm change to zfs if you are using zfs
+file_system = "lvm"
