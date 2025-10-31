@@ -39,12 +39,12 @@ wget -q https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd6
 # Update and install necessary tools
 apt update -y
 apt install -y libguestfs-tools
-virt-customize -a focal-server-cloudimg-amd64.img --install qemu-guest-agent
+virt-customize -a noble-server-cloudimg-amd64.img --install qemu-guest-agent
 
 # Create a base VM with the right configuration
 echo "Creating VM with ID: $VMID and storage: $STORAGE"
 qm create "$VMID" --name "ubuntu-2204-template" --memory 2048 --cores 2 --net0 virtio,bridge=vmbr0
-qm importdisk "$VMID" focal-server-cloudimg-amd64.img "$STORAGE"
+qm importdisk "$VMID" noble-server-cloudimg-amd64.img "$STORAGE"
 qm set "$VMID" --scsihw virtio-scsi-pci --scsi0 "$STORAGE:vm-$VMID-disk-0"
 qm set "$VMID" --boot c --bootdisk scsi0
 qm set "$VMID" --ide2 "$STORAGE:cloudinit"
