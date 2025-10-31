@@ -30,7 +30,7 @@ if [ -z "$VMID" ]; then
 fi
 
 # Fetch a cloud-init image of Ubuntu
-wget -q https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
+wget -q https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img
 
 # If you have multiple nodes and run a Proxmox cluster, try and run this on the node with the maximum storage.
 # If you are not on a Proxmox subscription, disable any enterprise repos:
