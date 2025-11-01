@@ -2,7 +2,7 @@ terraform {
   required_providers {
     proxmox = {
       source  = "telmate/proxmox"
-      version = "3.0.1-rc5"
+      version = "3.0.2-rc05"
     }
   }
 }
@@ -26,12 +26,14 @@ resource "proxmox_vm_qemu" "kube-server" {
   agent       = 1
   os_type     = "cloud-init"
   full_clone  = true
-  cores       = 2
-  sockets     = 1
-  cpu         = "host"
-  memory      = 4096
+  memory      = 8192
   scsihw      = "virtio-scsi-single"
   bootdisk    = "scsi0"
+
+  cpu {
+    cores = 2
+    type  = "host"
+  }
 
   serial {
     id   = 0
@@ -87,12 +89,14 @@ resource "proxmox_vm_qemu" "kube-agent" {
   clone       = var.vm_template_name
   agent       = 1
   os_type     = "cloud-init"
-  cores       = 1
-  sockets     = 1
-  cpu_type    = "host"
-  memory      = 3072
+  memory      = 12288
   scsihw      = "virtio-scsi-single"
   bootdisk    = "scsi0"
+
+  cpu {
+    type  = "host"
+    cores = 1
+  }
 
   disk {
     slot      = "scsi0"
